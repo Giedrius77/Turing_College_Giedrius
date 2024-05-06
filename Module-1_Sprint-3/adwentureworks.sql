@@ -144,21 +144,21 @@ LIMIT 20;
 -- Fixed and debugged: make all allies easy to read, complete all joins based on SELECT query.
 
 SELECT vendor.VendorID AS NameID
-,vendor.Name
-,vendor.CreditRating
-,vendor.ActiveFlag
-,vendor_contact.ContactId
-,contacttype.ContactTypeId
-,vendoraddress.AddressId
-,address.City
+      ,vendor.Name
+      ,vendor.CreditRating
+      ,vendor.ActiveFlag
+      ,vendorcontact.ContactId
+      ,contacttype.ContactTypeId
+      ,vendoraddress.AddressId
+      ,address.City
 
 FROM `tc-da-1.adwentureworks_db.vendor` AS vendor
 
-JOIN `tc-da-1.adwentureworks_db.vendorcontact` AS vendor_contact 
-ON vendor.VendorID = vendor_contact.VendorID
+JOIN `tc-da-1.adwentureworks_db.vendorcontact` AS vendorcontact 
+ON vendor.VendorID = vendorcontact.VendorID
 
 LEFT JOIN `tc-da-1.adwentureworks_db.contacttype` AS contacttype
-ON vendor_contact.ContactTypeID = contacttype.ContactTypeID
+ON vendorcontact.ContactTypeID = contacttype.ContactTypeID
 
 LEFT JOIN `tc-da-1.adwentureworks_db.vendoraddress` AS vendoraddress
 ON vendor.VendorID = vendoraddress.VendorID
