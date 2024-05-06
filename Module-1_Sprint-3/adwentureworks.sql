@@ -7,7 +7,7 @@
 
 SELECT p.ProductID, p.Name, p.ProductNumber, p.Size, p.Color, psc.ProductSubcategoryID, psc.Name AS SubCategory
 FROM `tc-da-1.adwentureworks_db.product` AS p
-JOIN `adwentureworks_db.productsubcategory` AS psc
+JOIN `tc-da-1.adwentureworks_db.productsubcategory` AS psc
 ON p.ProductSubcategoryID = psc.ProductSubcategoryID
 ORDER BY SubCategory
 LIMIT 5;
@@ -19,9 +19,9 @@ LIMIT 5;
 
 SELECT p.ProductID, p.Name, p.ProductNumber, p.Size, p.Color, psc.ProductSubcategoryID, psc.Name AS SubCategoryName, pc.Name AS Category
 FROM `tc-da-1.adwentureworks_db.product` AS p
-JOIN `adwentureworks_db.productsubcategory` AS psc
+JOIN `tc-da-1.adwentureworks_db.productsubcategory` AS psc
 ON p.ProductSubcategoryID = psc.ProductSubcategoryID
-JOIN `adwentureworks_db.productcategory` AS pc
+JOIN `tc-da-1.adwentureworks_db.productcategory` AS pc
 ON psc.ProductCategoryID = pc.ProductCategoryID
 ORDER BY pc.Name
 LIMIT 5;
@@ -32,9 +32,9 @@ LIMIT 5;
 
 SELECT p.ProductID, p.Name, p.ProductNumber, p.ListPrice, psc.Name AS SubCategory, pc.Name AS Category
 FROM `tc-da-1.adwentureworks_db.product` AS p
-JOIN `adwentureworks_db.productsubcategory` AS psc
+JOIN `tc-da-1.adwentureworks_db.productsubcategory` AS psc
 ON p.ProductSubcategoryID = psc.ProductSubcategoryID
-JOIN `adwentureworks_db.productcategory` AS pc
+JOIN `tc-da-1.adwentureworks_db.productcategory` AS pc
 ON psc.ProductCategoryID = pc.ProductCategoryID
 WHERE (pc.Name = 'Bikes' AND p.ListPrice > 2000) AND p.SellEndDate IS NULL
 ORDER BY p.ListPrice DESC
@@ -44,8 +44,8 @@ LIMIT 5;
 
 SELECT 
     (SELECT COUNT(*) FROM `tc-da-1.adwentureworks_db.product`) AS Total_ProductID,
-    (SELECT COUNT(*) FROM `adwentureworks_db.productsubcategory`) AS Total_ProductSubcategoryID,
-    (SELECT COUNT(*) FROM `adwentureworks_db.productcategory`) AS Total_ProductCategoryID
+    (SELECT COUNT(*) FROM `tc-da-1.adwentureworks_db.productsubcategory`) AS Total_ProductSubcategoryID,
+    (SELECT COUNT(*) FROM `tc-da-1.adwentureworks_db.productcategory`) AS Total_ProductCategoryID
     
 
 -- 2. Reviewing work orders
@@ -59,11 +59,11 @@ SELECT
 
 SELECT l.LocationID, COUNT(wo.OrderQty) AS no_work_orders, COUNT(DISTINCT p.Name) AS no_unique_product, SUM(wor.ActualCost) AS actual_cost
 FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
-JOIN `adwentureworks_db.location` AS l
+JOIN `tc-da-1.adwentureworks_db.location` AS l
 ON wor.LocationID = l.LocationID
-JOIN `adwentureworks_db.workorder` AS wo
+JOIN `tc-da-1.adwentureworks_db.workorder` AS wo
 ON wor.WorkOrderID = wo.WorkOrderID
-JOIN `adwentureworks_db.product` AS p
+JOIN `tc-da-1.adwentureworks_db.product` AS p
 ON wo.ProductID = p.ProductID
 WHERE wor.ModifiedDate BETWEEN '2004-01-01' AND '2004-02-01'
 GROUP BY l.LocationID
@@ -78,11 +78,11 @@ SELECT l.LocationID, l.Name,
   SUM(wor.ActualCost) AS actual_cost, 
   CAST(AVG(DATE_DIFF(wor.ActualEndDate, wor.ActualStartDate, day))AS DECIMAL) AS avg_days_diff
 FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
-  JOIN `adwentureworks_db.product` AS p
+  JOIN `tc-da-1.adwentureworks_db.product` AS p
   ON wor.ProductID = p.ProductID
-  JOIN `adwentureworks_db.location` AS l
+  JOIN `tc-da-1.adwentureworks_db.location` AS l
   ON wor.LocationID = l.LocationID
-  JOIN `adwentureworks_db.workorder` AS wo
+  JOIN `tc-da-1.adwentureworks_db.workorder` AS wo
   ON wor.WorkOrderID = wo.WorkOrderID
 WHERE wor.ModifiedDate BETWEEN '2004-01-01' AND '2004-02-01'
 GROUP BY l.LocationID, l.Name
@@ -93,7 +93,7 @@ ORDER BY SUM(wor.ActualCost) DESC;
 
 SELECT wo.WorkOrderID AS WorkOrderID, wor.ActualCost AS actual_cost
 FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
-JOIN `adwentureworks_db.workorder` AS wo
+JOIN `tc-da-1.adwentureworks_db.workorder` AS wo
 ON wor.WorkOrderID = wo.WorkOrderID 
 -- JOIN `adwentureworks_db.product`AS p
 -- ON wo.ProductID = p.ProductID
@@ -105,3 +105,13 @@ WHERE wor.ModifiedDate BETWEEN '2004-01-01' AND '2004-02-01'
 ORDER BY actual_cost
 LIMIT 5;
 -- WHERE wor.ActualCost > 300 AND
+
+
+-- Task 3. Query validation
+
+-- Below you will find 2 queries that need to be fixed/updated.
+-- Doubleclick on the cell of the query and you will see it in the original format, copy it into your Bigquery interface and try to fix it there.
+-- Once you have it fixed, copy into your spreadsheet of results among previous task results.
+
+-- 3.1 Your colleague has written a query to find the list of orders connected to special offers. The query works fine but the numbers are off, investigate where the potential issue lies.
+
