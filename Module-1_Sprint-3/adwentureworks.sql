@@ -57,3 +57,51 @@ SELECT
 -- Total actual cost.
 -- For each location Id from the 'workoderrouting' table for orders in January 2004.
 
+SELECT l.LocationID, COUNT(wo.OrderQty) AS no_work_orders, COUNT(DISTINCT p.Name) AS no_unique_product, SUM(wor.ActualCost) AS actual_cost
+FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
+JOIN `adwentureworks_db.location` AS l
+ON wor.LocationID = l.LocationID
+JOIN `adwentureworks_db.workorder` AS wo
+ON wor.WorkOrderID = wo.WorkOrderID
+JOIN `adwentureworks_db.product` AS p
+ON wo.ProductID = p.ProductID
+WHERE wor.ModifiedDate BETWEEN '2004-01-01' AND '2004-02-01'
+GROUP BY l.LocationID
+ORDER BY SUM(wor.ActualCost) DESC;
+
+-- 2.2 Update your 2.1 query by adding the name of the location 
+-- and also add the average days amount between actual start date and actual end date per each location.
+
+SELECT l.LocationID, l.Name, 
+  COUNT(wo.OrderQty) AS no_work_orders, 
+  COUNT(DISTINCT p.Name) AS no_unique_product, 
+  SUM(wor.ActualCost) AS actual_cost, 
+  CAST(AVG(DATE_DIFF(wor.ActualEndDate, wor.ActualStartDate, day))AS DECIMAL) AS avg_days_diff
+FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
+  JOIN `adwentureworks_db.product` AS p
+  ON wor.ProductID = p.ProductID
+  JOIN `adwentureworks_db.location` AS l
+  ON wor.LocationID = l.LocationID
+  JOIN `adwentureworks_db.workorder` AS wo
+  ON wor.WorkOrderID = wo.WorkOrderID
+WHERE wor.ModifiedDate BETWEEN '2004-01-01' AND '2004-02-01'
+GROUP BY l.LocationID, l.Name
+ORDER BY SUM(wor.ActualCost) DESC;
+
+-- 2.3 Select all the expensive work Orders (above 300 actual cost) that happened throught January 2004.
+-- I can't find right solution regard ActualCost above 300!!!! 
+
+SELECT wo.WorkOrderID AS WorkOrderID, wor.ActualCost AS actual_cost
+FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
+JOIN `adwentureworks_db.workorder` AS wo
+ON wor.WorkOrderID = wo.WorkOrderID 
+-- JOIN `adwentureworks_db.product`AS p
+-- ON wo.ProductID = p.ProductID
+-- JOIN `adwentureworks_db.transactionhistory` AS th
+-- ON th.ProductID = p.ProductID
+-- JOIN `adwentureworks_db.transactionhistoryarchive` AS tha
+-- ON th.TransactionID = tha.TransactionID
+WHERE wor.ModifiedDate BETWEEN '2004-01-01' AND '2004-02-01'
+ORDER BY actual_cost
+LIMIT 5;
+-- WHERE wor.ActualCost > 300 AND
