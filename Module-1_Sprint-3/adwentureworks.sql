@@ -5,40 +5,55 @@
 -- Columns needed: ProductId, Name, ProductNumber, size, color, ProductSubcategoryId, Subcategory name.
 -- Order results by SubCategory name.
 
-SELECT p.ProductID, p.Name, p.ProductNumber, p.Size, p.Color, psc.ProductSubcategoryID, psc.Name AS SubCategory
+SELECT p.ProductID
+      ,p.Name
+      ,p.ProductNumber
+      ,p.Size
+      ,p.Color
+      ,psc.ProductSubcategoryID
+      ,psc.Name AS SubCategory
 FROM `tc-da-1.adwentureworks_db.product` AS p
 JOIN `tc-da-1.adwentureworks_db.productsubcategory` AS psc
 ON p.ProductSubcategoryID = psc.ProductSubcategoryID
-ORDER BY SubCategory
-LIMIT 5;
+ORDER BY SubCategory;
 
 -- 1.2 In 1.1 query you have a product subcategory but see that you could use the category name.
 
 -- Find and add the product category name.
 -- Afterwards order the results by Category name.
 
-SELECT p.ProductID, p.Name, p.ProductNumber, p.Size, p.Color, psc.ProductSubcategoryID, psc.Name AS SubCategoryName, pc.Name AS Category
+SELECT p.ProductID
+      ,p.Name
+      ,p.ProductNumber
+      ,p.Size
+      ,p.Color
+      ,psc.ProductSubcategoryID
+      ,psc.Name AS SubCategoryName
+      ,pc.Name AS Category
 FROM `tc-da-1.adwentureworks_db.product` AS p
 JOIN `tc-da-1.adwentureworks_db.productsubcategory` AS psc
 ON p.ProductSubcategoryID = psc.ProductSubcategoryID
 JOIN `tc-da-1.adwentureworks_db.productcategory` AS pc
 ON psc.ProductCategoryID = pc.ProductCategoryID
-ORDER BY pc.Name
-LIMIT 5;
+ORDER BY pc.Name;
 
 -- 1.3 Use the established query to select the most expensive (price listed over 2000) bikes that are still actively sold (does not have a sales end date)
 
 -- Order the results from most to least expensive bike.
 
-SELECT p.ProductID, p.Name, p.ProductNumber, p.ListPrice, psc.Name AS SubCategory, pc.Name AS Category
+SELECT p.ProductID
+      ,p.Name
+      ,p.ProductNumber
+      ,p.ListPrice
+      ,psc.Name AS SubCategory
+      ,pc.Name AS Category
 FROM `tc-da-1.adwentureworks_db.product` AS p
 JOIN `tc-da-1.adwentureworks_db.productsubcategory` AS psc
 ON p.ProductSubcategoryID = psc.ProductSubcategoryID
 JOIN `tc-da-1.adwentureworks_db.productcategory` AS pc
 ON psc.ProductCategoryID = pc.ProductCategoryID
 WHERE (pc.Name = 'Bikes' AND p.ListPrice > 2000) AND p.SellEndDate IS NULL
-ORDER BY p.ListPrice DESC
-LIMIT 5;
+ORDER BY p.ListPrice DESC;
 
 -- Rows counts per individual tables
 
@@ -57,7 +72,10 @@ SELECT
 -- Total actual cost.
 -- For each location Id from the 'workoderrouting' table for orders in January 2004.
 
-SELECT l.LocationID, COUNT(wo.OrderQty) AS no_work_orders, COUNT(DISTINCT p.Name) AS no_unique_product, SUM(wor.ActualCost) AS actual_cost
+SELECT l.LocationID
+      ,COUNT(wo.OrderQty) AS no_work_orders
+      ,COUNT(DISTINCT p.Name) AS no_unique_product
+      ,SUM(wor.ActualCost) AS actual_cost
 FROM `tc-da-1.adwentureworks_db.workorderrouting` AS wor
 JOIN `tc-da-1.adwentureworks_db.location` AS l
 ON wor.LocationID = l.LocationID
@@ -135,8 +153,7 @@ ON sales_detail.SpecialOfferID = spec_offer_product.SpecialOfferID
 LEFT JOIN `tc-da-1.adwentureworks_db.specialoffer` AS spec_offer
 ON sales_detail.SpecialOfferID = spec_offer.SpecialOfferID
 
-ORDER BY LineTotal DESC
-LIMIT 20;
+ORDER BY LineTotal DESC;
 
 
 -- 3.2 Your colleague has written this query to collect basic Vendor information. The query does not work, look into the query and find ways to fix it. Can you provide any feedback on how to make this query be easier to debug/read?
@@ -166,5 +183,4 @@ ON vendor.VendorID = vendoraddress.VendorID
 LEFT JOIN `tc-da-1.adwentureworks_db.address` AS address 
 ON vendoraddress.AddressID = address.AddressID
 
-ORDER BY NameID
-LIMIT 5;
+ORDER BY NameID;
