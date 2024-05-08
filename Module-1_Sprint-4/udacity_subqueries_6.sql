@@ -1,0 +1,2 @@
+-- 6. What is the lifetime average amount spent in terms of total_amt_usd, 
+-- including only the companies that spent more per order, on average, than the average of all orders.
