@@ -50,3 +50,16 @@ FROM (SELECT o.account_id, AVG(o.total_amt_usd) avg_amt
     GROUP BY 1 
     HAVING AVG(o.total_amt_usd) > (SELECT AVG(o.total_amt_usd) avg_all
                                     FROM orders o)) temp_table; 
+
+/* 4th STEP using WITH */
+
+/* Udacity */
+
+WITH t1 AS ( SELECT AVG(o.total_amt_usd) avg_all FROM orders o 
+    JOIN accounts a ON a.id = o.account_id), 
+t2 AS ( SELECT o.account_id, AVG(o.total_amt_usd) avg_amt FROM orders o 
+GROUP BY 1 
+HAVING AVG(o.total_amt_usd) > (SELECT * FROM t1)) 
+
+SELECT AVG(avg_amt) 
+FROM t2
