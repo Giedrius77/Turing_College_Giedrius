@@ -13,31 +13,31 @@
 
 WITH 
 customer AS (SELECT cus.CustomerID,con.Firstname,con.LastName,
-CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
-CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
-con.EmailAddress,
-con.Phone,
-cus.AccountNumber,
-cus.CustomerType
-FROM `adwentureworks_db.customer` AS cus
-JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
-JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
+        CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
+        CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
+        con.EmailAddress,
+        con.Phone,
+        cus.AccountNumber,
+        cus.CustomerType
+    FROM `adwentureworks_db.customer` AS cus
+        JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
+        JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
 
 address AS (SELECT cus_add.CustomerID,addr.city, addr.AddressLine1, addr.AddressLine2, sta_pro.Name AS State, cou_reg.Name AS Country,cus_add.ModifiedDate,
-ROW_NUMBER() OVER (PARTITION BY cus_add.CustomerID ORDER BY cus_add.AddressID DESC) AS number
-FROM `adwentureworks_db.customeraddress` AS cus_add
-JOIN `adwentureworks_db.address` AS addr ON cus_add.AddressID = addr.AddressID
-JOIN `adwentureworks_db.stateprovince` AS sta_pro ON addr.StateProvinceID = sta_pro.StateProvinceID
-JOIN `adwentureworks_db.countryregion` AS cou_reg ON sta_pro.CountryRegionCode = cou_reg.CountryRegionCode),
+        ROW_NUMBER() OVER (PARTITION BY cus_add.CustomerID ORDER BY cus_add.AddressID DESC) AS number
+    FROM `adwentureworks_db.customeraddress` AS cus_add
+        JOIN `adwentureworks_db.address` AS addr ON cus_add.AddressID = addr.AddressID
+        JOIN `adwentureworks_db.stateprovince` AS sta_pro ON addr.StateProvinceID = sta_pro.StateProvinceID
+        JOIN `adwentureworks_db.countryregion` AS cou_reg ON sta_pro.CountryRegionCode = cou_reg.CountryRegionCode),
 
 sales AS (SELECT header.CustomerID, COUNT(header.SalesOrderID) AS number_orders, ROUND(SUM(header.TotalDue),3) AS total_amount, MAX(header.OrderDate) AS date_last_order
-FROM `adwentureworks_db.salesorderheader` AS header
-GROUP BY header.CustomerID)
+    FROM `adwentureworks_db.salesorderheader` AS header
+    GROUP BY header.CustomerID)
 
 SELECT c.*, a.* EXCEPT (CustomerID, ModifiedDate, number), s.* EXCEPT (CustomerID)
 FROM customer AS c
-JOIN address AS a ON c.CustomerID = a.CustomerID
-JOIN sales AS s ON c.CustomerID = s.CustomerID
+    JOIN address AS a ON c.CustomerID = a.CustomerID
+    JOIN sales AS s ON c.CustomerID = s.CustomerID
 ORDER BY s.total_amount DESC
 LIMIT 200;
 
@@ -48,15 +48,15 @@ LIMIT 200;
 
 WITH 
 customer AS (SELECT cus.CustomerID,con.Firstname,con.LastName,
-CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
-CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
-con.EmailAddress,
-con.Phone,
-cus.AccountNumber,
-cus.CustomerType
-FROM `adwentureworks_db.customer` AS cus
-JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
-JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
+        CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
+        CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
+        con.EmailAddress,
+        con.Phone,
+        cus.AccountNumber,
+        cus.CustomerType
+    FROM `adwentureworks_db.customer` AS cus
+        JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
+        JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
 
 sales AS (SELECT header.CustomerID, COUNT(header.SalesOrderID) AS number_orders, ROUND(SUM(header.TotalDue),3) AS total_amount, MAX(header.OrderDate) AS date_last_order
 FROM `adwentureworks_db.salesorderheader` AS header
@@ -64,7 +64,7 @@ GROUP BY header.CustomerID)
 
 SELECT c.full_name, s.total_amount, s.date_last_order AS last_year_order
 FROM customer AS c
-JOIN sales AS s ON c.CustomerID = s.CustomerID
+    JOIN sales AS s ON c.CustomerID = s.CustomerID
 WHERE (s.date_last_order < (SELECT MAX(OrderDate) - INTERVAL 365 DAY FROM adwentureworks_db.salesorderheader))
 ORDER BY s.total_amount DESC
 LIMIT 200;
@@ -76,24 +76,24 @@ LIMIT 200;
 
 WITH 
 customer AS (SELECT cus.CustomerID,con.Firstname,con.LastName,
-CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
-CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
-con.EmailAddress,
-con.Phone,
-cus.AccountNumber,
-cus.CustomerType
-FROM `adwentureworks_db.customer` AS cus
-JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
-JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
+        CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
+        CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
+        con.EmailAddress,
+        con.Phone,
+        cus.AccountNumber,
+        cus.CustomerType
+    FROM `adwentureworks_db.customer` AS cus
+        JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
+        JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
 
 sales AS (SELECT header.CustomerID, COUNT(header.SalesOrderID) AS number_orders, ROUND(SUM(header.TotalDue),3) AS total_amount, MAX(header.OrderDate) AS date_last_order
-FROM `adwentureworks_db.salesorderheader` AS header
-GROUP BY header.CustomerID)
+    FROM `adwentureworks_db.salesorderheader` AS header
+    GROUP BY header.CustomerID)
 
 SELECT c.CustomerID, c.full_name, s.number_orders,
-CASE WHEN s.date_last_order >= (SELECT MAX(OrderDate) - INTERVAL 365 DAY FROM adwentureworks_db.salesorderheader) THEN 'Active' ELSE 'Inactive' END AS customer_status
+    CASE WHEN s.date_last_order >= (SELECT MAX(OrderDate) - INTERVAL 365 DAY FROM adwentureworks_db.salesorderheader) THEN 'Active' ELSE 'Inactive' END AS customer_status
 FROM customer AS c
-JOIN sales AS s ON c.CustomerID = s.CustomerID
+    JOIN sales AS s ON c.CustomerID = s.CustomerID
 ORDER BY s.CustomerID DESC
 LIMIT 500;
 
@@ -104,33 +104,33 @@ LIMIT 500;
 
 WITH 
 customer AS (SELECT cus.CustomerID,con.Firstname,con.LastName,
-CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
-CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
-con.EmailAddress,
-con.Phone,
-cus.AccountNumber,
-cus.CustomerType
-FROM `adwentureworks_db.customer` AS cus
-JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
-JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
+        CONCAT(con.Firstname, ' ', con.LastName) AS full_name,
+        CASE WHEN con.Title IS NOT NULL THEN CONCAT(con.Title, ' ', con.LastName) ELSE CONCAT('Dear', ' ', con.LastName) END AS addressing_title,
+        con.EmailAddress,
+        con.Phone,
+        cus.AccountNumber,
+        cus.CustomerType
+    FROM `adwentureworks_db.customer` AS cus
+        JOIN `adwentureworks_db.individual` AS ind ON cus.CustomerID = ind.CustomerID
+        JOIN `adwentureworks_db.contact` AS con ON ind.ContactID = con.ContactId),
 
 address AS (SELECT cus_add.CustomerID,addr.city, addr.AddressLine1, addr.AddressLine2, sta_pro.Name AS State, cou_reg.Name AS Country,cus_add.ModifiedDate,
-ROW_NUMBER() OVER (PARTITION BY cus_add.CustomerID ORDER BY cus_add.AddressID DESC) AS number
-FROM `adwentureworks_db.customeraddress` AS cus_add
-JOIN `adwentureworks_db.address` AS addr ON cus_add.AddressID = addr.AddressID
-JOIN `adwentureworks_db.stateprovince` AS sta_pro ON addr.StateProvinceID = sta_pro.StateProvinceID
-JOIN `adwentureworks_db.countryregion` AS cou_reg ON sta_pro.CountryRegionCode = cou_reg.CountryRegionCode),
+        ROW_NUMBER() OVER (PARTITION BY cus_add.CustomerID ORDER BY cus_add.AddressID DESC) AS number
+    FROM `adwentureworks_db.customeraddress` AS cus_add
+        JOIN `adwentureworks_db.address` AS addr ON cus_add.AddressID = addr.AddressID
+        JOIN `adwentureworks_db.stateprovince` AS sta_pro ON addr.StateProvinceID = sta_pro.StateProvinceID
+        JOIN `adwentureworks_db.countryregion` AS cou_reg ON sta_pro.CountryRegionCode = cou_reg.CountryRegionCode),
 
 sales AS (SELECT header.CustomerID, COUNT(header.SalesOrderID) AS number_orders, ROUND(SUM(header.TotalDue),3) AS total_amount, MAX(header.OrderDate) AS date_last_order,
-CASE WHEN MAX(header.OrderDate) >= (SELECT MAX(OrderDate) - INTERVAL 365 DAY FROM adwentureworks_db.salesorderheader) THEN 'Active' ELSE 'Inactive' END AS customer_status
-FROM `adwentureworks_db.salesorderheader` AS header
-GROUP BY header.CustomerID)
+        CASE WHEN MAX(header.OrderDate) >= (SELECT MAX(OrderDate) - INTERVAL 365 DAY FROM adwentureworks_db.salesorderheader) THEN 'Active' ELSE 'Inactive' END AS customer_status
+    FROM `adwentureworks_db.salesorderheader` AS header
+    GROUP BY header.CustomerID)
 
 SELECT c.CustomerID, c.full_name, a.Country, a.AddressLine1, SUBSTR(a.AddressLine1, 0, STRPOS(a.AddressLine1, ' ')-1) AS address_no, 
-SUBSTR(a.AddressLine1, STRPOS(a.AddressLine1, ' ')) AS Address_st, s.number_orders, s.total_amount, s.date_last_order
+    SUBSTR(a.AddressLine1, STRPOS(a.AddressLine1, ' ')) AS Address_st, s.number_orders, s.total_amount, s.date_last_order
 FROM customer AS c
-JOIN address AS a ON c.CustomerID = a.CustomerID
-JOIN sales AS s ON c.CustomerID = s.CustomerID
+    JOIN address AS a ON c.CustomerID = a.CustomerID
+    JOIN sales AS s ON c.CustomerID = s.CustomerID
 WHERE (customer_status = 'Active' AND a.Country IN ('United States', 'Canada')) AND (s.number_orders >= 5 OR s.total_amount >= 2500)
 ORDER BY a.Country, a.State, s.date_last_order;
 
@@ -141,14 +141,14 @@ ORDER BY a.Country, a.State, s.date_last_order;
 -- Result Hint:
 
 SELECT DATE_SUB(DATE_ADD(DATE_TRUNC(DATE(header.OrderDate), MONTH), INTERVAL 1 MONTH), INTERVAL 1 DAY) AS order_month,
-CountryRegionCode, Name AS Region, 
-COUNT(DISTINCT SalesOrderID) AS number_orders, 
-COUNT(DISTINCT customer.CustomerID) AS number_customers,
-COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
-CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax
+    CountryRegionCode, Name AS Region, 
+    COUNT(DISTINCT SalesOrderID) AS number_orders, 
+    COUNT(DISTINCT customer.CustomerID) AS number_customers,
+    COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
+    CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax
 FROM `adwentureworks_db.salesorderheader` AS header
-JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
-JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
+    JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
+    JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
 GROUP BY order_month, CountryRegionCode, Name
 
 -- 2.2 Enrich 2.1 query with the cumulative_sum of the total amount with tax earned per country & region.
@@ -157,18 +157,18 @@ GROUP BY order_month, CountryRegionCode, Name
 
 WITH t1 AS (
 SELECT DATE_SUB(DATE_ADD(DATE_TRUNC(DATE(header.OrderDate), MONTH), INTERVAL 1 MONTH), INTERVAL 1 DAY) AS order_month,
-CountryRegionCode, Name AS Region, 
-COUNT(DISTINCT SalesOrderID) AS number_orders, 
-COUNT(DISTINCT customer.CustomerID) AS number_customers,
-COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
-CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax
+    CountryRegionCode, Name AS Region, 
+    COUNT(DISTINCT SalesOrderID) AS number_orders, 
+    COUNT(DISTINCT customer.CustomerID) AS number_customers,
+    COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
+    CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax
 FROM `adwentureworks_db.salesorderheader` AS header
-JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
-JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
+    JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
+    JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
 GROUP BY order_month, CountryRegionCode, Name)
 
 SELECT t1.*, 
-SUM(t1.Total_w_tax) OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.order_month) AS cumulative_sum
+    SUM(t1.Total_w_tax) OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.order_month) AS cumulative_sum
 FROM t1;
 
 
@@ -177,19 +177,19 @@ FROM t1;
 
 WITH t1 AS (
 SELECT DATE_SUB(DATE_ADD(DATE_TRUNC(DATE(header.OrderDate), MONTH), INTERVAL 1 MONTH), INTERVAL 1 DAY) AS order_month,
-CountryRegionCode, Name AS Region, 
-COUNT(DISTINCT SalesOrderID) AS number_orders, 
-COUNT(DISTINCT customer.CustomerID) AS number_customers,
-COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
-CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax
+    CountryRegionCode, Name AS Region, 
+    COUNT(DISTINCT SalesOrderID) AS number_orders, 
+    COUNT(DISTINCT customer.CustomerID) AS number_customers,
+    COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
+    CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax
 FROM `adwentureworks_db.salesorderheader` AS header
-JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
-JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
+    JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
+    JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
 GROUP BY order_month, CountryRegionCode, Name)
 
 SELECT t1.*, 
-RANK() OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.Total_w_tax DESC) AS country_sales_rank,
-SUM(t1.Total_w_tax) OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.order_month) AS cumulative_sum
+    RANK() OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.Total_w_tax DESC) AS country_sales_rank,
+    SUM(t1.Total_w_tax) OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.order_month) AS cumulative_sum
 FROM t1
 
 
@@ -204,39 +204,39 @@ FROM t1
 WITH t2 AS
 (WITH t1 AS (
 SELECT DATE_SUB(DATE_ADD(DATE_TRUNC(DATE(header.OrderDate), MONTH), INTERVAL 1 MONTH), INTERVAL 1 DAY) AS order_month,
-territory.CountryRegionCode, territory.Name AS Region, 
-COUNT(DISTINCT SalesOrderID) AS number_orders, 
-COUNT(DISTINCT customer.CustomerID) AS number_customers,
-COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
-CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax,
-MAX(tax.TaxRate) AS MaxTaxRate
+    territory.CountryRegionCode, territory.Name AS Region, 
+    COUNT(DISTINCT SalesOrderID) AS number_orders, 
+    COUNT(DISTINCT customer.CustomerID) AS number_customers,
+    COUNT(DISTINCT SalesPersonID) AS no_salesPersons,
+    CAST(SUM(TotalDue) AS INTEGER) AS Total_w_tax,
+    MAX(tax.TaxRate) AS MaxTaxRate
 FROM `adwentureworks_db.salesorderheader` AS header
-JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
-JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
-JOIN `adwentureworks_db.stateprovince` AS province ON territory.TerritoryID = province.TerritoryID
-JOIN `adwentureworks_db.salestaxrate` AS tax ON province.StateProvinceID = tax.StateProvinceID
+    JOIN `adwentureworks_db.salesterritory` AS territory ON header.TerritoryID = territory.TerritoryID
+    JOIN `adwentureworks_db.customer` AS customer ON header.CustomerID = customer.CustomerID
+    JOIN `adwentureworks_db.stateprovince` AS province ON territory.TerritoryID = province.TerritoryID
+    JOIN `adwentureworks_db.salestaxrate` AS tax ON province.StateProvinceID = tax.StateProvinceID
 GROUP BY order_month, territory.CountryRegionCode, territory.Name)
 
 SELECT t1.*, 
-RANK() OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.Total_w_tax DESC) AS country_sales_rank,
-SUM(t1.Total_w_tax) OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.order_month) AS cumulative_sum
+    RANK() OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.Total_w_tax DESC) AS country_sales_rank,
+    SUM(t1.Total_w_tax) OVER (PARTITION BY t1.CountryRegionCode, t1.Region ORDER BY t1.order_month) AS cumulative_sum
 FROM t1),
 
 tax_data AS (
 SELECT 
-region.Name, province.CountryRegionCode,
-ROUND(AVG(TaxRate),1) AS mean_tax_rate,
-COUNT(DISTINCT tax.StateProvinceID) AS provinces_with_tax,
-ROUND((COUNT(DISTINCT tax.StateProvinceID) / COALESCE(total_provinces.total_provinces, 1)),2) AS perc_provinces_w_tax
+    region.Name, province.CountryRegionCode,
+    ROUND(AVG(TaxRate),1) AS mean_tax_rate,
+    COUNT(DISTINCT tax.StateProvinceID) AS provinces_with_tax,
+    ROUND((COUNT(DISTINCT tax.StateProvinceID) / COALESCE(total_provinces.total_provinces, 1)),2) AS perc_provinces_w_tax
 FROM `adwentureworks_db.salestaxrate` AS tax
-JOIN `adwentureworks_db.stateprovince` AS province ON tax.StateProvinceID = province.StateProvinceID
-JOIN `adwentureworks_db.countryregion` AS region ON province.CountryRegionCode = region.CountryRegionCode
-LEFT JOIN (SELECT CountryRegionCode, COUNT(DISTINCT StateProvinceID) AS total_provinces
+    JOIN `adwentureworks_db.stateprovince` AS province ON tax.StateProvinceID = province.StateProvinceID
+    JOIN `adwentureworks_db.countryregion` AS region ON province.CountryRegionCode = region.CountryRegionCode
+    LEFT JOIN (SELECT CountryRegionCode, COUNT(DISTINCT StateProvinceID) AS total_provinces
 FROM `adwentureworks_db.stateprovince`
 GROUP BY CountryRegionCode) AS total_provinces ON province.CountryRegionCode = total_provinces.CountryRegionCode
 GROUP BY region.Name, province.CountryRegionCode, total_provinces.total_provinces)
 
 SELECT t2.* EXCEPT(MaxTaxRate), tax_data.mean_tax_rate, tax_data.perc_provinces_w_tax
 FROM t2
-LEFT JOIN tax_data ON t2.CountryRegionCode = tax_data.CountryRegionCode
+    LEFT JOIN tax_data ON t2.CountryRegionCode = tax_data.CountryRegionCode
 -- WHERE t2.CountryRegionCode = 'US'
